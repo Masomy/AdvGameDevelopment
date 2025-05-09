@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private bool canMove = true;
     private float currentLeanAngle = 0f;
     private Vector3 defaultCameraPosition;
+    
 
     void Start()
     {
@@ -48,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
+        // Jumping
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpPower;
@@ -57,11 +59,13 @@ public class PlayerMovement : MonoBehaviour
             moveDirection.y = movementDirectionY;
         }
 
+        // Gravity
         if (!characterController.isGrounded)
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
 
+        // Crouch
         if (Input.GetKey(KeyCode.LeftControl) && canMove)
         {
             characterController.height = crouchHeight;
@@ -84,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
 
-        // Leaning System (Shifting & Tilting Camera)
+        // Leaning System (Shifting & Tilting Camera Relative Objects)
         Vector3 targetCameraPosition = defaultCameraPosition;
         float targetLeanAngle = 0f;
 
@@ -102,8 +106,22 @@ public class PlayerMovement : MonoBehaviour
         // Smooth transition for position and tilt
         playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, targetCameraPosition, Time.deltaTime * leanSpeed);
         currentLeanAngle = Mathf.Lerp(currentLeanAngle, targetLeanAngle, Time.deltaTime * leanSpeed);
+                
+
 
         // Apply tilt and rotation
         playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, currentLeanAngle);
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.CompareTag("Trap"))
+        {
+            Trap trap = hit.collider.GetComponent<Trap>();
+            if (trap != null)
+            {
+                trap.HitPlayer(gameObject);
+            }
+        }
     }
 }

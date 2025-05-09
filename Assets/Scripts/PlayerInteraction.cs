@@ -7,7 +7,6 @@ public class PlayerInteraction : MonoBehaviour
     public float interactRange = 3f;
     public Camera playerCamera;
     public LayerMask interactableLayer;
-    public GameObject interactionPromptUI;
 
     private InteractableObject currentInteractable;
 
@@ -15,7 +14,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         HandleRaycast();
 
-        if (currentInteractable != null && Input.GetKeyDown(KeyCode.E))
+        if (currentInteractable != null && Input.GetKeyDown(KeyCode.F))
         {
             Lever lever = currentInteractable.GetComponent<Lever>();
             if (lever != null)
@@ -25,11 +24,9 @@ public class PlayerInteraction : MonoBehaviour
             else
             {
                 currentInteractable.Interact(gameObject);
-
             }
 
             currentInteractable = null;
-            interactionPromptUI.SetActive(false);
         }
     }
 
@@ -44,12 +41,10 @@ public class PlayerInteraction : MonoBehaviour
             if (interactable != null)
             {
                 currentInteractable = interactable;
-                interactionPromptUI.SetActive(true);
                 return;
             }
         }
 
         currentInteractable = null;
-        interactionPromptUI.SetActive(false);
     }
 }

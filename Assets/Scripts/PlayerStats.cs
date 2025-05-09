@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerStats : MonoBehaviour
 {
     public int score = 0;
     public int health = 100;
-
     public int keys = 0;
 
     public void AddScore(int amount)
@@ -20,6 +20,12 @@ public class PlayerStats : MonoBehaviour
         health += amount;
         health = Mathf.Clamp(health, 0, 100);
         Debug.Log("Health: " + health);
+
+        if (health <= 0)
+        {
+            Debug.Log("Player died! Reloading scene...");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     public void AddKey(int amount)
